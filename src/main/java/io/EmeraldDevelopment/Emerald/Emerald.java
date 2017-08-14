@@ -5,9 +5,14 @@ import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
 
-/** --- Authors ---
+/**
+ * Emerald is a Discord bot built with the same idea as Bukkit. Most Discord bots are generally designed
+ * as a single unchanging instance that cannot be changed or modified in at best simple ways. Emerald is
+ * designed to change that by allowing developers to simply build plugins to expand the capabilities of
+ * their bots.
+ *
  * @author Atrius
- * @author Khriox
+ * @author mikethemaker
  */
 public class Emerald {
 
