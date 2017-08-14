@@ -21,6 +21,8 @@ public class Emerald {
 
         // Create directories
         createDirectories();
+        // Load plugins
+        loadPlugins();
         // Login to the service
         login(args[0]);
     }
@@ -28,11 +30,18 @@ public class Emerald {
     // Create directories for users and guilds
     private static void createDirectories() {
 
+        File plugins = new File("plugins/");
         File users = new File("users/");
         File guilds = new File("guilds/");
 
+        if (!plugins.exists()) plugins.mkdir();
         if (!users.exists()) users.mkdirs();
-        if (!guilds.exists()) guilds.mkdirs();
+        if (!guilds.exists()) guilds.mkdir();
+    }
+
+    // Load the plugins in the plugins directory
+    private static void loadPlugins() {
+
     }
 
     // Log into the service with the given token
