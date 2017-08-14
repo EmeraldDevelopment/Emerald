@@ -23,7 +23,7 @@ public class CommandRegistry {
      *
      * @param cmd The commands to add.
      */
-    public void registerCommand(Command... cmd) {
+    public void registerCommands (Command... cmd) {
 
         for (Command command : cmd) {
 
