@@ -16,6 +16,10 @@ import java.io.File;
  */
 public class Emerald {
 
+    private static File plugins = new File("plugins/");
+    private static File users = new File("users/");
+    private static File guilds = new File("guilds/");
+
     // Emerald Initialization
     public static void main(String[] args) {
 
@@ -29,13 +33,8 @@ public class Emerald {
 
     // Create directories for users and guilds
     private static void createDirectories() {
-
-        File plugins = new File("plugins/");
-        File users = new File("users/");
-        File guilds = new File("guilds/");
-
         if (!plugins.exists()) plugins.mkdir();
-        if (!users.exists()) users.mkdirs();
+        if (!users.exists()) users.mkdir();
         if (!guilds.exists()) guilds.mkdir();
     }
 

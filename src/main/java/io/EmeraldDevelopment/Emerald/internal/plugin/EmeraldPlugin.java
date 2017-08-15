@@ -1,4 +1,4 @@
-package io.EmeraldDevelopment.Emerald.internal;
+package io.EmeraldDevelopment.Emerald.internal.plugin;
 
 public abstract class EmeraldPlugin {
 
