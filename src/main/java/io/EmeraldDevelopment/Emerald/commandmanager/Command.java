@@ -1,4 +1,9 @@
 package io.EmeraldDevelopment.Emerald.commandmanager;
 
-public interface Command {
+/**
+ * Command object
+ */
+public abstract class Command {
+
+    public abstract void execute(/*TODO*/);
 }

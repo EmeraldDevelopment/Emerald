@@ -1,8 +1,12 @@
 package io.EmeraldDevelopment.Emerald.annotations;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Header annotation used to identify plugin jars.
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Plugin {
 
     // The name of the plugin.

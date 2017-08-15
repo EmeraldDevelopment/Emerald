@@ -1,8 +1,12 @@
 package io.EmeraldDevelopment.Emerald.annotations;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Class header annotation used to identify a command.
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
 
     // The text that the command is assigned to.

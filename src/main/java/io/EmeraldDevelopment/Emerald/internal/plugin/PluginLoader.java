@@ -1,12 +1,9 @@
 package io.EmeraldDevelopment.Emerald.internal.plugin;
 
-import java.io.File;
+import java.io.IOException;
+import java.util.jar.JarFile;
 
 public interface PluginLoader {
 
-    Plugin loadPlugin(File file);
-
-    void enablePlugin(Plugin plugin);
-
-    void disablePlugin(Plugin plugin);
+    Plugin loadPlugin(JarFile file) throws IOException;
 }
