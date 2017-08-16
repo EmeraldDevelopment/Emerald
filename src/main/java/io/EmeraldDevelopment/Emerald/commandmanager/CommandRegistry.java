@@ -1,10 +1,16 @@
 package io.EmeraldDevelopment.Emerald.commandmanager;
 
+import io.EmeraldDevelopment.Emerald.Emerald;
 import io.EmeraldDevelopment.Emerald.internal.plugin.EmeraldPlugin;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,7 +19,7 @@ import java.util.List;
 public class CommandRegistry {
 
     private static CommandRegistry registry;
-    private LinkedHashMap<EmeraldPlugin, List<Command>> commands;
+    private HashMap<EmeraldPlugin, List<Command>> commands = new HashMap<>();
 
     /**
      * Gets the instance of the command registry.
@@ -26,6 +32,7 @@ public class CommandRegistry {
             registry = new CommandRegistry();
         }
 
+        Emerald.getClient().getDispatcher().registerListener(registry);
         return registry;
     }
 
@@ -34,8 +41,23 @@ public class CommandRegistry {
      *
      * @return The list of registered commands.
      */
-    public LinkedHashMap<EmeraldPlugin, List<Command>> getRegisteredCommands() {
+    public HashMap<EmeraldPlugin, List<Command>> getRegisteredCommands() {
         return commands;
+    }
+
+    /**
+     * Gets a flattened list of commands registered in Emerald.
+     *
+     * @return The flattened command list.
+     */
+    public List<Command> getFlattenedCommandList() {
+        List<Command> allCommands = new ArrayList<>();
+
+        for (List<Command> cmd : commands.values()) {
+            allCommands.addAll(cmd);
+        }
+
+        return allCommands;
     }
 
     /**
@@ -57,8 +79,26 @@ public class CommandRegistry {
     public void registerCommands(EmeraldPlugin plugin, Command... cmd) {
         // Gets the plugin's command list if it already exists, otherwise makes a new one
         List<Command> pluginCommands = commands.containsKey(plugin) ? commands.get(plugin) : new ArrayList<>();
-        // Adds the commands to the
+        // Add the commands to the registry.
         pluginCommands.addAll(Arrays.asList(cmd));
         commands.put(plugin, pluginCommands);
+    }
+
+    @EventSubscriber
+    public void onCommandSent(MessageReceivedEvent event) {
+
+        IDiscordClient client = event.getClient();
+        IMessage message = event.getMessage();
+        IUser user = event.getAuthor();
+
+        // Ignore the event if client isn't ready or logged in
+        if (!client.isReady() || !client.isLoggedIn()) {
+            return;
+        }
+
+        for (Command command : getFlattenedCommandList()) {
+
+            command.execute(message, user, new String[0]);
+        }
     }
 }

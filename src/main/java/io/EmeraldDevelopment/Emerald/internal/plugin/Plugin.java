@@ -3,6 +3,7 @@ package io.EmeraldDevelopment.Emerald.internal.plugin;
 import io.EmeraldDevelopment.Emerald.commandmanager.Command;
 import io.EmeraldDevelopment.Emerald.commandmanager.CommandRegistry;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public final class Plugin {
     private String version;
     private String permissionIdentifier;
     private boolean requireDatabase;
+    private HashSet<Class<?>> classMap = new HashSet<>();
 
     public Plugin(EmeraldPlugin plugin, String pluginName, String[] authors, String version, String permissionIdentifier, boolean requireDatabase) {
         this.plugin = plugin;
@@ -64,5 +66,13 @@ public final class Plugin {
     // List of all commands this plugin contains.
     public List<Command> getCommands() {
         return CommandRegistry.getRegistry().getRegisteredCommandsForPlugin(plugin);
+    }
+
+    public HashSet<Class<?>> getClassMap() {
+        return classMap;
+    }
+
+    public void setClassMap(HashSet<Class<?>> classMap) {
+        this.classMap = classMap;
     }
 }

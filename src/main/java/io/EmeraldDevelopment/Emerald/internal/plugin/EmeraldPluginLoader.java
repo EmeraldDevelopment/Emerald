@@ -8,13 +8,17 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 public final class EmeraldPluginLoader implements PluginLoader {
 
     private static EmeraldPluginLoader instance;
+    private JarClassLoader loader = Emerald.getClassLoader();
 
     /**
      * Gets the instance of the plugin loader.
@@ -40,10 +44,11 @@ public final class EmeraldPluginLoader implements PluginLoader {
     @SuppressWarnings("unchecked")
     public Plugin loadPlugin(JarFile file) throws IOException {
         InputStream stream = file.getInputStream(file.getEntry("plugin.yml"));
-        JarClassLoader loader = Emerald.getClassLoader();
+        Enumeration<JarEntry> entries = file.entries();
+        HashSet<Class<?>> classMap = new HashSet<>();
         // Make sure the stream isn't null
         if (stream == null) {
-            Logger.getLogger("Test").warning("Failed to find plugin.yml");
+            Logger.getLogger("Test").warning("Couldn't find plugin.yml");
             return null;
         }
         // Try to load the plugin.yml into the bot
@@ -60,11 +65,31 @@ public final class EmeraldPluginLoader implements PluginLoader {
             System.out.println("Main class not provided.");
             return null;
         }
+
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+
+            if (entry.getName().endsWith(".class")) {
+                String name = entry.getName().replace("/", ".").replace(".class", "");
+
+                try {
+                    Class<?> loadedClass = Class.forName(name, true, loader);
+                    classMap.add(loadedClass);
+                } catch (ClassNotFoundException e) {
+                    System.out.println("Failed to load class " + entry.getName() + " (Possibly corrupted?)");
+                }
+            }
+        }
+
         // Resolve the main class from the URL
-        Class<?> mainClass;
-        try {
-              mainClass = Class.forName(mainClassURL, true, loader);
-        } catch (ClassNotFoundException e) {
+        Class<?> mainClass = null;
+        for (Class<?> clazz : classMap) {
+            if (clazz.getName().equals(mainClassURL)) {
+                mainClass = clazz;
+            }
+        }
+        // Check to make sure the main class isn't null
+        if (mainClass == null) {
             System.out.println(mainClassURL + " does not point to a class.");
             stream.close();
             return null;
@@ -75,18 +100,21 @@ public final class EmeraldPluginLoader implements PluginLoader {
             pluginClass = mainClass.asSubclass(EmeraldPlugin.class);
         } catch (ClassCastException e) {
             System.out.println(file.getName() + " is not a valid plugin and cannot be loaded! Contact the developers for help.");
-            loader.unloadClass(mainClass.getName());
+            for (Class<?> clazz : classMap) {
+                loader.unloadClass(clazz.getName());
+            }
             return null;
         }
-        // Build and run the enable for the plugin
+        // Build the plugin and assign the class map to it.
         Plugin plugin;
         try {
             plugin = buildPlugin(pluginClass);
+            plugin.setClassMap(classMap);
         } catch (IllegalAccessException | InstantiationException e) {
             System.out.println("Error occurred in plugin loading.");
             return null;
         }
-        // Run the plugin enable code
+
         plugin.getPlugin().onEnable();
         stream.close();
         return plugin;

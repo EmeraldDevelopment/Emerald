@@ -4,6 +4,7 @@ import io.EmeraldDevelopment.Emerald.internal.plugin.EmeraldPluginLoader;
 import io.EmeraldDevelopment.Emerald.internal.plugin.PluginLoader;
 import org.xeustechnologies.jcl.JarClassLoader;
 import sx.blah.discord.api.ClientBuilder;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
@@ -24,19 +25,19 @@ public class Emerald {
     private static File plugins = new File("plugins/");
     private static File users = new File("users/");
     private static File guilds = new File("guilds/");
-
     private static JarClassLoader classLoader = new JarClassLoader();
+    private static IDiscordClient client;
 
     // Emerald Initialization
     public static void main(String[] args) {
         classLoader.add(getPluginDirectory().getName());
 
+        // Login to the service
+        login(args[0]);
         // Create directories
         createDirectories();
         // Load plugins
         loadPlugins();
-        // Login to the service
-        login(args[0]);
     }
 
     // Create directories for users and guilds
@@ -77,7 +78,7 @@ public class Emerald {
     private static void login(String token) {
 
         try {
-            new ClientBuilder().withToken(token).login();
+            client = new ClientBuilder().withToken(token).login();
         } catch (DiscordException e) {
             // TODO: Throw a text error here later.
         }
@@ -99,5 +100,9 @@ public class Emerald {
      */
     public static JarClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public static IDiscordClient getClient() {
+        return client;
     }
 }
