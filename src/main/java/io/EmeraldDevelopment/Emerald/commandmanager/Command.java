@@ -2,6 +2,7 @@ package io.EmeraldDevelopment.Emerald.commandmanager;
 
 import io.EmeraldDevelopment.Emerald.annotations.CommandMeta;
 import io.EmeraldDevelopment.Emerald.exceptions.CommandMetaException;
+import io.EmeraldDevelopment.Emerald.internal.SenderType;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
@@ -14,6 +15,8 @@ public abstract class Command {
     private String usage;
     private String description;
     private boolean usePermissions;
+    private int minimumArgs;
+    private SenderType[] validSenders;
 
     public Command() {
         CommandMeta meta = getClass().getAnnotation(CommandMeta.class);
@@ -26,6 +29,8 @@ public abstract class Command {
         usage = meta.usage();
         description = meta.description();
         usePermissions = meta.usePermissions();
+        minimumArgs = meta.minimumArgs();
+        validSenders = meta.validSenders();
     }
 
     public String getCommand() {
@@ -42,6 +47,14 @@ public abstract class Command {
 
     public boolean isUsePermissions() {
         return usePermissions;
+    }
+
+    public int getMinimumArgs() {
+        return minimumArgs;
+    }
+
+    public SenderType[] getValidSenders() {
+        return validSenders;
     }
 
     public abstract void execute(IMessage message, IUser user, String[] args);

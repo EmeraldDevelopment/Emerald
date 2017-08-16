@@ -50,7 +50,7 @@ public class CommandRegistry {
      *
      * @return The flattened command list.
      */
-    public List<Command> getFlattenedCommandList() {
+    private List<Command> getFlattenedCommandList() {
         List<Command> allCommands = new ArrayList<>();
 
         for (List<Command> cmd : commands.values()) {
@@ -98,7 +98,6 @@ public class CommandRegistry {
 
         for (Command command : getFlattenedCommandList()) {
 
-            command.execute(message, user, new String[0]);
         }
     }
 }

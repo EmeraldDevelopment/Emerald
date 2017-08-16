@@ -1,5 +1,7 @@
 package io.EmeraldDevelopment.Emerald.annotations;
 
+import io.EmeraldDevelopment.Emerald.internal.SenderType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -17,4 +19,8 @@ public @interface CommandMeta {
     String description() default "No description provided.";
     // Toggles whether permissions should be used for this command.
     boolean usePermissions() default false;
+    // The minimum argument count for this command.
+    int minimumArgs() default 0;
+    // The valid sender types for this command.
+    SenderType[] validSenders() default {SenderType.USER, SenderType.CONSOLE};
 }
