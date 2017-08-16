@@ -3,8 +3,6 @@ package io.EmeraldDevelopment.Emerald.commandmanager;
 import io.EmeraldDevelopment.Emerald.annotations.CommandMeta;
 import io.EmeraldDevelopment.Emerald.exceptions.CommandMetaException;
 import io.EmeraldDevelopment.Emerald.internal.SenderType;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Command object
@@ -45,7 +43,7 @@ public abstract class Command {
         return description;
     }
 
-    public boolean isUsePermissions() {
+    public boolean requiresPermissions() {
         return usePermissions;
     }
 
@@ -57,5 +55,5 @@ public abstract class Command {
         return validSenders;
     }
 
-    public abstract void execute(IMessage message, IUser user, String[] args);
+    public abstract void execute(String[] args);
 }

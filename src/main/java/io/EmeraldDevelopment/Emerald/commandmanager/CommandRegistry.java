@@ -50,7 +50,7 @@ public class CommandRegistry {
      *
      * @return The flattened command list.
      */
-    private List<Command> getFlattenedCommandList() {
+    public List<Command> getFlattenedCommandList() {
         List<Command> allCommands = new ArrayList<>();
 
         for (List<Command> cmd : commands.values()) {
@@ -96,8 +96,34 @@ public class CommandRegistry {
             return;
         }
 
+        String[] commandData = message.getContent().split(" ");
+
+        if (commandData.length < 1) {
+            return;
+        }
+
+        String commandName = commandData[0].replaceFirst("!", "");
+        String[] args = commandData.length > 1 ? Arrays.copyOfRange(commandData, 1, commandData.length) : new String[0];
+
         for (Command command : getFlattenedCommandList()) {
 
+            // Skip the current command if it doesn't match the sent command
+            if (!command.getCommand().equalsIgnoreCase(commandName)) {
+                continue;
+            }
+
+            if (command.requiresPermissions()) {
+                // TODO: Add permission system.
+            }
+
+            // Make sure the command has the minimum required argument count
+            if (args.length < command.getMinimumArgs()) {
+                return;
+            }
+
+            // TODO: Add sender type detection.
+            command.execute(args); // TODO Implement command definition properly
+            break;
         }
     }
 }
