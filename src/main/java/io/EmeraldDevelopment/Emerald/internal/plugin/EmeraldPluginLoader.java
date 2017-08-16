@@ -38,32 +38,31 @@ public final class EmeraldPluginLoader implements PluginLoader {
      * Loads a plugin from a given jar file.
      *
      * @param file The jar file to check.
-     * @return The plugin object.
      * @throws IOException If the plugin doesn't have a plugin.yml
      */
     @SuppressWarnings("unchecked")
-    public Plugin loadPlugin(JarFile file) throws IOException {
+    public void loadPlugin(JarFile file) throws IOException {
         InputStream stream = file.getInputStream(file.getEntry("plugin.yml"));
         Enumeration<JarEntry> entries = file.entries();
         HashSet<Class<?>> classMap = new HashSet<>();
         // Make sure the stream isn't null
         if (stream == null) {
             Logger.getLogger("Test").warning("Couldn't find plugin.yml");
-            return null;
+            return;
         }
         // Try to load the plugin.yml into the bot
         Map<String, String> pluginConfig = (Map<String, String>) new Yaml().load(stream);
         // Return an error if the plugin config doesn't exist or doesn't contain a main key
         if (pluginConfig == null || !pluginConfig.containsKey("main")) {
             System.out.println("plugin.yml does not exist or is corrupted.");
-            return null;
+            return;
         }
         // Get the value of the main key
         String mainClassURL = pluginConfig.get("main");
         // If the main key doesn't exist throw an error
         if (mainClassURL == null) {
             System.out.println("Main class not provided.");
-            return null;
+            return;
         }
 
         while (entries.hasMoreElements()) {
@@ -92,7 +91,7 @@ public final class EmeraldPluginLoader implements PluginLoader {
         if (mainClass == null) {
             System.out.println(mainClassURL + " does not point to a class.");
             stream.close();
-            return null;
+            return;
         }
         // If the class doesn't extend EmeraldPlugin then unload it
         Class<? extends EmeraldPlugin> pluginClass;
@@ -103,7 +102,7 @@ public final class EmeraldPluginLoader implements PluginLoader {
             for (Class<?> clazz : classMap) {
                 loader.unloadClass(clazz.getName());
             }
-            return null;
+            return;
         }
         // Build the plugin and assign the class map to it.
         Plugin plugin;
@@ -112,12 +111,11 @@ public final class EmeraldPluginLoader implements PluginLoader {
             plugin.setClassMap(classMap);
         } catch (IllegalAccessException | InstantiationException e) {
             System.out.println("Error occurred in plugin loading.");
-            return null;
+            return;
         }
 
         plugin.getPlugin().onEnable();
         stream.close();
-        return plugin;
     }
 
     /**

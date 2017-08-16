@@ -3,6 +3,7 @@ package io.EmeraldDevelopment.Emerald.commandmanager;
 import io.EmeraldDevelopment.Emerald.annotations.CommandMeta;
 import io.EmeraldDevelopment.Emerald.exceptions.CommandMetaException;
 import io.EmeraldDevelopment.Emerald.internal.SenderType;
+import io.EmeraldDevelopment.Emerald.internal.plugin.CommandSender;
 
 /**
  * Command object
@@ -55,5 +56,5 @@ public abstract class Command {
         return validSenders;
     }
 
-    public abstract void execute(String[] args);
+    public abstract void execute(CommandSender sender, String[] args);
 }

@@ -65,18 +65,13 @@ public class Emerald {
                     loader.loadPlugin(new JarFile(file));
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Failed to load plugin!");
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (IOException | IllegalAccessException | InstantiationException e) {
+            System.out.println("Failed to load plugin! (Possibly corrupted?)");
         }
     }
 
     // Log into the service with the given token
     private static void login(String token) {
-
         try {
             client = new ClientBuilder().withToken(token).login();
         } catch (DiscordException e) {
@@ -89,7 +84,7 @@ public class Emerald {
      *
      * @return Emerald's plugin directory.
      */
-    public static File getPluginDirectory() {
+    private static File getPluginDirectory() {
         return plugins;
     }
 
@@ -102,6 +97,11 @@ public class Emerald {
         return classLoader;
     }
 
+    /**
+     * Gets the Discord client for Emerald.
+     *
+     * @return Emerald's discord client.
+     */
     public static IDiscordClient getClient() {
         return client;
     }

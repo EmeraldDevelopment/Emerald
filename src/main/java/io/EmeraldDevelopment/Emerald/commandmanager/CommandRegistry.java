@@ -1,12 +1,13 @@
 package io.EmeraldDevelopment.Emerald.commandmanager;
 
 import io.EmeraldDevelopment.Emerald.Emerald;
+import io.EmeraldDevelopment.Emerald.internal.EUser;
+import io.EmeraldDevelopment.Emerald.internal.SenderType;
 import io.EmeraldDevelopment.Emerald.internal.plugin.EmeraldPlugin;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ public class CommandRegistry {
      *
      * @return The flattened command list.
      */
-    public List<Command> getFlattenedCommandList() {
+    public List<Command> getCommandList() {
         List<Command> allCommands = new ArrayList<>();
 
         for (List<Command> cmd : commands.values()) {
@@ -84,12 +85,12 @@ public class CommandRegistry {
         commands.put(plugin, pluginCommands);
     }
 
-    @EventSubscriber
+    @EventSubscriber // The command handler for the bot
     public void onCommandSent(MessageReceivedEvent event) {
 
         IDiscordClient client = event.getClient();
         IMessage message = event.getMessage();
-        IUser user = event.getAuthor();
+        EUser user = (EUser) event.getAuthor();
 
         // Ignore the event if client isn't ready or logged in
         if (!client.isReady() || !client.isLoggedIn()) {
@@ -105,24 +106,30 @@ public class CommandRegistry {
         String commandName = commandData[0].replaceFirst("!", "");
         String[] args = commandData.length > 1 ? Arrays.copyOfRange(commandData, 1, commandData.length) : new String[0];
 
-        for (Command command : getFlattenedCommandList()) {
-
+        for (Command command : getCommandList()) {
             // Skip the current command if it doesn't match the sent command
             if (!command.getCommand().equalsIgnoreCase(commandName)) {
                 continue;
             }
-
+            // Check if the user has the proper permissions
             if (command.requiresPermissions()) {
-                // TODO: Add permission system.
+                if (!user.hasPermission(command)) {
+                    return;
+                }
             }
-
             // Make sure the command has the minimum required argument count
             if (args.length < command.getMinimumArgs()) {
                 return;
             }
+            // Make sure the user is a valid sender
+            for (SenderType senderType : command.getValidSenders()) {
 
-            // TODO: Add sender type detection.
-            command.execute(args); // TODO Implement command definition properly
+                if (user.getSenderType().equals(senderType)) {
+                    command.execute(user, args); // TODO Implement command definition properly
+                    break;
+                }
+            }
+
             break;
         }
     }
