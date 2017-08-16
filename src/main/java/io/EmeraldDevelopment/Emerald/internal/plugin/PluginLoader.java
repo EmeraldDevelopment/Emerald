@@ -5,5 +5,5 @@ import java.util.jar.JarFile;
 
 public interface PluginLoader {
 
-    Plugin loadPlugin(JarFile file) throws IOException;
+    Plugin loadPlugin(JarFile file) throws IOException, IllegalAccessException, InstantiationException;
 }

@@ -49,12 +49,27 @@ public class Emerald {
 
     // Load the plugins in the plugins directory
     private static void loadPlugins() {
-        PluginLoader loader = new EmeraldPluginLoader();
+        PluginLoader loader = EmeraldPluginLoader.getInstance();
         try {
-            // TODO: Replace this with a dynamic system
-            loader.loadPlugin(new JarFile("plugins/test.jar"));
+            File[] files = getPluginDirectory().listFiles();
+            // Check if the directory is empty
+            if (files == null) {
+                return;
+            }
+            // Loop over each file
+            for (File file : files) {
+                // Load the file as a jar file
+                if (file.getName().endsWith(".jar")) {
+                    System.out.println("Loading plugin " + file.getName() + "...");
+                    loader.loadPlugin(new JarFile(file));
+                }
+            }
         } catch (IOException e) {
             System.out.println("Failed to load plugin!");
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
     }
 

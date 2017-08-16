@@ -1,9 +1,8 @@
 package io.EmeraldDevelopment.Emerald.internal.plugin;
 
 import io.EmeraldDevelopment.Emerald.commandmanager.Command;
-import io.EmeraldDevelopment.Emerald.events.Listener;
+import io.EmeraldDevelopment.Emerald.commandmanager.CommandRegistry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,20 +10,25 @@ import java.util.List;
  */
 public final class Plugin {
 
+    private EmeraldPlugin plugin;
     private String pluginName;
     private String[] authors;
     private String version;
     private String permissionIdentifier;
     private boolean requireDatabase;
-    private List<Command> commands = new ArrayList<>();
-    private List<Listener> listeners = new ArrayList<>();
 
-    public Plugin(String pluginName, String[] authors, String version, String permissionIdentifier, boolean requireDatabase) {
+    public Plugin(EmeraldPlugin plugin, String pluginName, String[] authors, String version, String permissionIdentifier, boolean requireDatabase) {
+        this.plugin = plugin;
         this.pluginName = pluginName;
         this.authors = authors;
         this.version = version;
         this.permissionIdentifier = permissionIdentifier;
         this.requireDatabase = requireDatabase;
+    }
+
+    // Gets the EmeraldPlugin object for the plugin.
+    public EmeraldPlugin getPlugin() {
+        return plugin;
     }
 
     // The name of the plugin.
@@ -59,11 +63,6 @@ public final class Plugin {
 
     // List of all commands this plugin contains.
     public List<Command> getCommands() {
-        return commands;
-    }
-
-    // List of all listeners this plugin contains.
-    public List<Listener> getListeners() {
-        return listeners;
+        return CommandRegistry.getRegistry().getRegisteredCommandsForPlugin(plugin);
     }
 }
