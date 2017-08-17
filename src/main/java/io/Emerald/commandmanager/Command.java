@@ -4,7 +4,7 @@ import io.Emerald.annotations.CommandMeta;
 import io.Emerald.exceptions.CommandMetaException;
 import io.Emerald.internal.api.ChannelType;
 import io.Emerald.internal.api.SenderType;
-import io.Emerald.internal.plugin.CommandSender;
+import io.Emerald.internal.api.CommandSender;
 
 /**
  * Command object

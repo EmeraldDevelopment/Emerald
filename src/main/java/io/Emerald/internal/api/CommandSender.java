@@ -1,13 +1,14 @@
-package io.Emerald.internal.plugin;
+package io.Emerald.internal.api;
 
 import io.Emerald.commandmanager.Command;
-import io.Emerald.internal.api.SenderType;
 
 public interface CommandSender {
 
     void sendMessage(String message);
 
     boolean hasPermission(Command command);
+
+    boolean hasModifier(Command command, String modifier);
 
     SenderType getSenderType();
 }

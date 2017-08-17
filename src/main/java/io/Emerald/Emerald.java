@@ -57,7 +57,7 @@ public class Emerald {
             if (files == null) {
                 return;
             }
-            // Loop over each file
+
             for (File file : files) {
                 // Load the file as a jar file
                 if (file.getName().endsWith(".jar")) {

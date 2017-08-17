@@ -3,20 +3,21 @@ package io.Emerald.internal.api;
 import io.Emerald.Emerald;
 import io.Emerald.commandmanager.Command;
 
-/**
- * Emerald's implementation of the console object.
- */
-public class EmeraldConsole implements Console {
+public class EmeraldConsole implements ConsoleSender {
 
     private static EmeraldConsole console;
 
-    private static EmeraldConsole getConsole() {
-
+    public static EmeraldConsole getConsole() {
         if (console == null) {
             console = new EmeraldConsole();
         }
 
         return console;
+    }
+
+    @Override
+    public String getName() {
+        return Emerald.getClient().getApplicationName();
     }
 
     @Override
@@ -30,12 +31,12 @@ public class EmeraldConsole implements Console {
     }
 
     @Override
-    public SenderType getSenderType() {
-        return SenderType.CONSOLE;
+    public boolean hasModifier(Command command, String modifier) {
+        return true;
     }
 
     @Override
-    public String getName() {
-        return Emerald.getClient().getApplicationName();
+    public SenderType getSenderType() {
+        return SenderType.CONSOLE;
     }
 }

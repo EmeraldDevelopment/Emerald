@@ -2,13 +2,13 @@ package io.Emerald.commandmanager;
 
 import io.Emerald.Emerald;
 import io.Emerald.internal.api.ChannelType;
-import io.Emerald.internal.api.User;
+import io.Emerald.internal.api.CommandSender;
+import io.Emerald.internal.api.EmeraldUser;
 import io.Emerald.internal.plugin.EmeraldPlugin;
-import io.Emerald.internal.util.Util;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +22,7 @@ public class CommandRegistry {
 
     private static CommandRegistry registry;
     private HashMap<EmeraldPlugin, List<Command>> commands = new HashMap<>();
+    private IDiscordClient client = Emerald.getClient();
 
     /**
      * Gets the instance of the command registry.
@@ -86,25 +87,33 @@ public class CommandRegistry {
         commands.put(plugin, pluginCommands);
     }
 
-    @EventSubscriber // The command handler for the bot
+    @EventSubscriber // The user command handler
     public void onCommandSent(MessageReceivedEvent event) {
-        IDiscordClient client = event.getClient();
-        IMessage message = event.getMessage();
-        User user = Util.getEmeraldUser(event.getAuthor());
-        // Ignore the event if client isn't ready or logged in
-        if (!client.isReady() || !client.isLoggedIn()) {
-            return;
-        }
 
-        String[] commandData = message.getContent().split(" ");
+        String[] commandData = event.getMessage().getContent().split(" ");
         // Make sure the command beings with the prefix
         if (!commandData[0].startsWith("!")) {
             return;
         }
 
+        processCommand(new EmeraldUser(event.getAuthor()), event.getChannel(), commandData);
+    }
+
+    // Processes a command without a channel
+    private void processCommand(CommandSender sender, String[] commandData) {
+        processCommand(sender, null, commandData);
+    }
+
+    // Processes the command with a given channel
+    private void processCommand(CommandSender sender, IChannel channel, String[] commandData) {
+        // Ignore the event if client isn't ready or logged in
+        if (!client.isReady() || !client.isLoggedIn()) {
+            return;
+        }
+
         String commandName = commandData[0].replaceFirst("!", "");
         String[] args = commandData.length > 1 ? Arrays.copyOfRange(commandData, 1, commandData.length) : new String[0];
-        // Loop over commands
+
         for (Command command : getCommandList()) {
             // Skip the current command if it doesn't match the sent command
             if (!command.getCommand().equalsIgnoreCase(commandName)) {
@@ -112,25 +121,26 @@ public class CommandRegistry {
             }
             // Check if the user has the proper permissions
             if (command.requiresPermissions()) {
-                if (!user.hasPermission(command)) {
+                if (!sender.hasPermission(command)) {
                     return;
                 }
             }
             // Make sure the command has the minimum required argument count
             if (args.length < command.getMinimumArgs()) {
-                user.sendMessage(command.getUsage());
+                sender.sendMessage(command.getUsage());
                 return;
             }
             // Make sure sender is a valid command sender
-            if (!Arrays.asList(command.getValidSenders()).contains(user.getSenderType())) {
+            if (!Arrays.asList(command.getValidSenders()).contains(sender.getSenderType())) {
                 return;
             }
-            // Make sure the command is sent in a valid channel
-            if (!Arrays.asList(command.getValidChannels()).contains(ChannelType.getChannelType(event.getChannel()))) {
+
+            if (channel != null && !Arrays.asList(command.getValidChannels()).contains(ChannelType.getChannelType(channel))) {
                 return;
             }
+
             // Execute the command
-            command.execute(user, args);
+            command.execute(sender, args);
             break;
         }
     }
