@@ -9,6 +9,9 @@ import sx.blah.discord.util.cache.LongMap;
 import java.util.EnumSet;
 import java.util.List;
 
+/**
+ * Emerald's user implementation.
+ */
 public class EmeraldUser implements User {
 
     private IUser user;
@@ -132,10 +135,12 @@ public class EmeraldUser implements User {
         return user.getLongID();
     }
 
+    @Override
     public void sendMessage(String message) {
         getOrCreatePMChannel().sendMessage(message);
     }
     // TODO Implement permission checking
+    @Override
     public boolean hasPermission(Command command) {
         return true;
     }

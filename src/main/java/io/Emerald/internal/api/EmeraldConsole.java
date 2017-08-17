@@ -3,6 +3,9 @@ package io.Emerald.internal.api;
 import io.Emerald.Emerald;
 import io.Emerald.commandmanager.Command;
 
+/**
+ * Emerald's console implementation.
+ */
 public class EmeraldConsole implements ConsoleSender {
 
     private static EmeraldConsole console;
