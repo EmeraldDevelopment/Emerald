@@ -1,7 +1,9 @@
 package io.Emerald;
 
 import io.Emerald.internal.plugin.EmeraldPluginLoader;
+import io.Emerald.internal.plugin.Plugin;
 import io.Emerald.internal.plugin.PluginLoader;
+import io.Emerald.internal.plugin.PluginRepository;
 import org.xeustechnologies.jcl.JarClassLoader;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -68,6 +70,12 @@ public class Emerald {
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             System.out.println("Failed to load plugin! (Possibly corrupted?)");
         }
+        // Execute onDisable() code before shutdown.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (Plugin plugin : PluginRepository.getInstance().getPlugins()) {
+                plugin.getPlugin().onDisable();
+            }
+        }, "Shutdown"));
     }
 
     // Log into the service with the given token
