@@ -1,7 +1,7 @@
-package io.EmeraldDevelopment.Emerald.internal.plugin;
+package io.Emerald.internal.plugin;
 
-import io.EmeraldDevelopment.Emerald.commandmanager.Command;
-import io.EmeraldDevelopment.Emerald.internal.api.commandsender.SenderType;
+import io.Emerald.commandmanager.Command;
+import io.Emerald.internal.api.SenderType;
 
 public interface CommandSender {
 

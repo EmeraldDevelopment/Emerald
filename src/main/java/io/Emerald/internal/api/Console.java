@@ -5,7 +5,7 @@ import io.Emerald.internal.plugin.CommandSender;
 /**
  * Emerald's console object.
  */
-public interface IConsole extends CommandSender {
+public interface Console extends CommandSender {
 
     String getName();
 }

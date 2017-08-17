@@ -1,4 +1,4 @@
-package io.Emerald.internal.api.commandsender;
+package io.Emerald.internal.api;
 
 import io.Emerald.Emerald;
 import io.Emerald.commandmanager.Command;
@@ -6,7 +6,7 @@ import io.Emerald.commandmanager.Command;
 /**
  * Emerald's implementation of the console object.
  */
-public class EmeraldConsole implements IConsole {
+public class EmeraldConsole implements Console {
 
     private static EmeraldConsole console;
 

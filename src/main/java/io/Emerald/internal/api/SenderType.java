@@ -1,5 +1,5 @@
-package io.Emerald.internal.api.commandsender;
+package io.Emerald.internal.api;
 
 public enum SenderType {
-    USER, CONSOLE;
+    USER, CONSOLE
 }

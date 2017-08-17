@@ -1,6 +1,7 @@
-package io.EmeraldDevelopment.Emerald.annotations;
+package io.Emerald.annotations;
 
-import io.EmeraldDevelopment.Emerald.internal.api.commandsender.SenderType;
+import io.Emerald.internal.api.ChannelType;
+import io.Emerald.internal.api.SenderType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,4 +24,6 @@ public @interface CommandMeta {
     int minimumArgs() default 0;
     // The valid sender types for this command.
     SenderType[] validSenders() default {SenderType.USER, SenderType.CONSOLE};
+    // The valid channel types for this command.
+    ChannelType[] validChannels() default {ChannelType.PRIVATE, ChannelType.PUBLIC};
 }

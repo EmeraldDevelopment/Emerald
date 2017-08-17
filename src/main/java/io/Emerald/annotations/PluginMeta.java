@@ -1,4 +1,4 @@
-package io.EmeraldDevelopment.Emerald.annotations;
+package io.Emerald.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,7 +1,7 @@
-package io.EmeraldDevelopment.Emerald.internal.plugin;
+package io.Emerald.internal.plugin;
 
-import io.EmeraldDevelopment.Emerald.commandmanager.Command;
-import io.EmeraldDevelopment.Emerald.commandmanager.CommandRegistry;
+import io.Emerald.commandmanager.Command;
+import io.Emerald.commandmanager.CommandRegistry;
 
 import java.util.HashSet;
 import java.util.List;

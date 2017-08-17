@@ -1,4 +1,4 @@
-package io.EmeraldDevelopment.Emerald.permissionmanager;
+package io.Emerald.permissionmanager;
 
 /**
  * The manager for the permissions system.

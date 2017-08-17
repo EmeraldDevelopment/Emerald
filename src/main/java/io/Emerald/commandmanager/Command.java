@@ -1,9 +1,10 @@
-package io.EmeraldDevelopment.Emerald.commandmanager;
+package io.Emerald.commandmanager;
 
-import io.EmeraldDevelopment.Emerald.annotations.CommandMeta;
-import io.EmeraldDevelopment.Emerald.exceptions.CommandMetaException;
-import io.EmeraldDevelopment.Emerald.internal.api.commandsender.SenderType;
-import io.EmeraldDevelopment.Emerald.internal.plugin.CommandSender;
+import io.Emerald.annotations.CommandMeta;
+import io.Emerald.exceptions.CommandMetaException;
+import io.Emerald.internal.api.ChannelType;
+import io.Emerald.internal.api.SenderType;
+import io.Emerald.internal.plugin.CommandSender;
 
 /**
  * Command object
@@ -16,6 +17,7 @@ public abstract class Command {
     private boolean usePermissions;
     private int minimumArgs;
     private SenderType[] validSenders;
+    private ChannelType[] validChannels;
 
     public Command() {
         CommandMeta meta = getClass().getAnnotation(CommandMeta.class);
@@ -30,6 +32,7 @@ public abstract class Command {
         usePermissions = meta.usePermissions();
         minimumArgs = meta.minimumArgs();
         validSenders = meta.validSenders();
+        validChannels = meta.validChannels();
     }
 
     public String getCommand() {
@@ -56,5 +59,15 @@ public abstract class Command {
         return validSenders;
     }
 
+    public ChannelType[] getValidChannels() {
+        return validChannels;
+    }
+
+    /**
+     * Executes the given command.
+     *
+     * @param sender The command source.
+     * @param args The arguments given.
+     */
     public abstract void execute(CommandSender sender, String[] args);
 }

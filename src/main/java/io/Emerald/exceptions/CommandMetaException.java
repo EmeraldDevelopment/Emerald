@@ -1,4 +1,4 @@
-package io.EmeraldDevelopment.Emerald.exceptions;
+package io.Emerald.exceptions;
 
 public class CommandMetaException extends RuntimeException {
 

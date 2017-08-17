@@ -1,13 +1,12 @@
-package io.EmeraldDevelopment.Emerald.internal.plugin;
+package io.Emerald.internal.plugin;
 
-import io.EmeraldDevelopment.Emerald.Emerald;
-import io.EmeraldDevelopment.Emerald.annotations.PluginMeta;
+import io.Emerald.Emerald;
+import io.Emerald.annotations.PluginMeta;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
@@ -124,16 +123,8 @@ public final class EmeraldPluginLoader implements PluginLoader {
      * @return The partially built plugin.
      */
     private Plugin buildPlugin(Class<? extends EmeraldPlugin> clazz) throws IllegalAccessException, InstantiationException {
-        PluginMeta meta = null;
-        EmeraldPlugin plugin;
-        plugin = clazz.newInstance();
-        // Loop over class annotations
-        for (Annotation annotation : clazz.getAnnotations()) {
-            if (annotation instanceof PluginMeta) {
-                meta = (PluginMeta) annotation;
-                break;
-            }
-        }
+        EmeraldPlugin plugin = clazz.newInstance();
+        PluginMeta meta = clazz.getAnnotation(PluginMeta.class);
         // If the @PluginMeta annotation doesn't exist fill in default info
         if (meta == null) {
             return new Plugin(plugin, "", new String[0], "", "", false);

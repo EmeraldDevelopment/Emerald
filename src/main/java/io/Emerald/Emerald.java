@@ -1,7 +1,7 @@
-package io.EmeraldDevelopment.Emerald;
+package io.Emerald;
 
-import io.EmeraldDevelopment.Emerald.internal.plugin.EmeraldPluginLoader;
-import io.EmeraldDevelopment.Emerald.internal.plugin.PluginLoader;
+import io.Emerald.internal.plugin.EmeraldPluginLoader;
+import io.Emerald.internal.plugin.PluginLoader;
 import org.xeustechnologies.jcl.JarClassLoader;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;

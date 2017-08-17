@@ -1,4 +1,4 @@
-package io.EmeraldDevelopment.Emerald.internal.plugin;
+package io.Emerald.internal.plugin;
 
 import java.io.IOException;
 import java.util.jar.JarFile;
