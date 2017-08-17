@@ -75,7 +75,7 @@ public class Emerald {
         try {
             client = new ClientBuilder().withToken(token).login();
         } catch (DiscordException e) {
-            // TODO: Throw a text error here later.
+            System.out.println("Failed to login! (Token possibly incorrect?)");
         }
     }
 
