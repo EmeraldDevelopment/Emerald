@@ -3,6 +3,7 @@ package io.Emerald.internal.api;
 import io.Emerald.commandmanager.Command;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.IShard;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.cache.LongMap;
 
@@ -153,5 +154,15 @@ public class EmeraldUser implements User {
     @Override
     public SenderType getSenderType() {
         return SenderType.USER;
+    }
+
+    @Override
+    public void sendMessage(EmbedObject object) {
+        getOrCreatePMChannel().sendMessage(object);
+    }
+
+    @Override
+    public void sendMessage(String message, EmbedObject object) {
+        getOrCreatePMChannel().sendMessage(message, object);
     }
 }

@@ -43,4 +43,21 @@ public class PluginRepository {
     public List<Plugin> getPlugins() {
         return plugins;
     }
+
+    /**
+     * Gets the internal plugin object from the plugin repository.
+     *
+     * @param plugin The Emerald Plugin object to check for.
+     * @return The plugin object for the given plugin parameter.
+     */
+    public Plugin getPlugin(EmeraldPlugin plugin) {
+
+        for (Plugin p : plugins) {
+            if (p.getClassMap().contains(plugin.getClass())) {
+                return p;
+            }
+        }
+
+        return null;
+    }
 }

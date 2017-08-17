@@ -132,4 +132,13 @@ public final class EmeraldPluginLoader implements PluginLoader {
         // Fill in plugin data from the @PluginMeta annotation
         return new Plugin(plugin, meta.pluginName(), meta.authors(), meta.version(), meta.permissionIdentifier(), meta.requireDatabase());
     }
+
+    public void prepareUnload() {
+        // Execute onDisable() code before shutdown.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (Plugin plugin : PluginRepository.getInstance().getPlugins()) {
+                plugin.getPlugin().onDisable();
+            }
+        }, "Shutdown"));
+    }
 }

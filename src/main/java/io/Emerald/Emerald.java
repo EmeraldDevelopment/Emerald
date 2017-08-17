@@ -1,9 +1,7 @@
 package io.Emerald;
 
 import io.Emerald.internal.plugin.EmeraldPluginLoader;
-import io.Emerald.internal.plugin.Plugin;
 import io.Emerald.internal.plugin.PluginLoader;
-import io.Emerald.internal.plugin.PluginRepository;
 import org.xeustechnologies.jcl.JarClassLoader;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -28,6 +26,7 @@ public class Emerald {
     private static File users = new File("users/");
     private static File guilds = new File("guilds/");
     private static JarClassLoader classLoader = new JarClassLoader();
+    private static PluginLoader loader = EmeraldPluginLoader.getInstance();
     private static IDiscordClient client;
 
     // Emerald Initialization
@@ -40,6 +39,8 @@ public class Emerald {
         createDirectories();
         // Load plugins
         loadPlugins();
+        // Prepares a thread for executing onDisable() for plugins later.
+        loader.prepareUnload();
     }
 
     // Create directories for users and guilds
@@ -52,7 +53,7 @@ public class Emerald {
 
     // Load the plugins in the plugins directory
     private static void loadPlugins() {
-        PluginLoader loader = EmeraldPluginLoader.getInstance();
+
         try {
             File[] files = getPluginDirectory().listFiles();
             // Check if the directory is empty
@@ -70,12 +71,6 @@ public class Emerald {
         } catch (IOException | IllegalAccessException | InstantiationException e) {
             System.out.println("Failed to load plugin! (Possibly corrupted?)");
         }
-        // Execute onDisable() code before shutdown.
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Plugin plugin : PluginRepository.getInstance().getPlugins()) {
-                plugin.getPlugin().onDisable();
-            }
-        }, "Shutdown"));
     }
 
     // Log into the service with the given token
