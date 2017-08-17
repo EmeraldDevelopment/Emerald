@@ -71,12 +71,15 @@ public class Emerald {
     }
 
     // Log into the service with the given token
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void login(String token) {
         try {
             client = new ClientBuilder().withToken(token).login();
         } catch (DiscordException e) {
             System.out.println("Failed to login! (Token possibly incorrect?)");
         }
+        // Deletes Discord4J's module directory
+        new File("modules/").delete();
     }
 
     /**
