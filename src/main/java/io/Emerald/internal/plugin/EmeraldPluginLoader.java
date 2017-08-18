@@ -5,6 +5,7 @@ import io.Emerald.annotations.PluginMeta;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -125,6 +126,8 @@ public final class EmeraldPluginLoader implements PluginLoader {
     private Plugin buildPlugin(Class<? extends EmeraldPlugin> clazz) throws IllegalAccessException, InstantiationException {
         EmeraldPlugin plugin = clazz.newInstance();
         PluginMeta meta = clazz.getAnnotation(PluginMeta.class);
+        new File("plugins/" + meta.pluginName() + "/config.yml").mkdirs();
+
         // If the @PluginMeta annotation doesn't exist fill in default info
         if (meta == null) {
             return new Plugin(plugin, "", new String[0], "", "", false);

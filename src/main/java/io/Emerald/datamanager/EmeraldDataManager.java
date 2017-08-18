@@ -71,6 +71,16 @@ public class EmeraldDataManager implements DataManager {
     }
 
     /**
+     * Loads the config file.
+     *
+     * @return The config's data.
+     */
+    @Override
+    public Map<String, Object> loadConfig() {
+        return loadFile(new File("config.yml"));
+    }
+
+    /**
      * Saves data to a file.
      *
      * @param user The user to save data for.
@@ -90,6 +100,16 @@ public class EmeraldDataManager implements DataManager {
     @Override
     public void saveFile(IGuild guild, LinkedHashMap<String, Object> data) {
         DataUtil.dumpToFile(new File("guilds/" + guild.getLongID() + ".yml"), data);
+    }
+
+    /**
+     * Saves the config file.
+     *
+     * @param data The data to save.
+     */
+    @Override
+    public void saveConfig(LinkedHashMap<String, Object> data) {
+        DataUtil.dumpToFile(new File("config.yml"), data);
     }
 
     // Creates a file

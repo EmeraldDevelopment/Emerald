@@ -43,6 +43,13 @@ public interface DataManager {
     Map<String, Object> loadFile(IGuild guild);
 
     /**
+     * Loads the config file.
+     *
+     * @return The config's data.
+     */
+    Map<String, Object> loadConfig();
+
+    /**
      * Saves data to a file.
      *
      * @param user The user to save data for.
@@ -57,4 +64,11 @@ public interface DataManager {
      * @param data The data to save.
      */
     void saveFile(IGuild guild, LinkedHashMap<String, Object> data);
+
+    /**
+     * Saves the config file.
+     *
+     * @param data The data to save.
+     */
+    void saveConfig(LinkedHashMap<String, Object> data);
 }

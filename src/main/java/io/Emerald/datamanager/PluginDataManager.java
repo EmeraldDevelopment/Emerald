@@ -68,6 +68,16 @@ public class PluginDataManager implements DataManager {
     }
 
     /**
+     * Loads the config file.
+     *
+     * @return The config's data.
+     */
+    @Override
+    public Map<String, Object> loadConfig() {
+        return loadFile(new File("plugins/" + plugin.getPluginName() + "/config.yml"));
+    }
+
+    /**
      * Saves data to a file.
      *
      * @param user The user to save data for.
@@ -85,6 +95,16 @@ public class PluginDataManager implements DataManager {
     @Override
     public void saveFile(IGuild guild, LinkedHashMap<String, Object> data) {
         DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/guilds/" + guild.getLongID() + ".yml"), data);
+    }
+
+    /**
+     * Saves the config file.
+     *
+     * @param data The data to save.
+     */
+    @Override
+    public void saveConfig(LinkedHashMap<String, Object> data) {
+        DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/config.yml"), data);
     }
 
     // Creates a file
