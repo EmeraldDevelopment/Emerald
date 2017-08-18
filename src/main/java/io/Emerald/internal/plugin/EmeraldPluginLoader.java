@@ -39,7 +39,7 @@ public final class EmeraldPluginLoader implements PluginLoader {
      * @param file The jar file to check.
      * @throws IOException If the plugin doesn't have a plugin.yml
      */
-    @SuppressWarnings("unchecked")
+    @Override @SuppressWarnings("unchecked")
     public void loadPlugin(JarFile file) throws IOException {
         InputStream stream = file.getInputStream(file.getEntry("plugin.yml"));
         Enumeration<JarEntry> entries = file.entries();
@@ -125,7 +125,6 @@ public final class EmeraldPluginLoader implements PluginLoader {
     private Plugin buildPlugin(Class<? extends EmeraldPlugin> clazz) throws IllegalAccessException, InstantiationException {
         EmeraldPlugin plugin = clazz.newInstance();
         PluginMeta meta = clazz.getAnnotation(PluginMeta.class);
-
         // If the @PluginMeta annotation doesn't exist fill in default info
         if (meta == null) {
             return new Plugin(plugin, "", new String[0], "", "", false);
@@ -134,12 +133,21 @@ public final class EmeraldPluginLoader implements PluginLoader {
         return new Plugin(plugin, meta.pluginName(), meta.authors(), meta.version(), meta.permissionIdentifier(), meta.requireDatabase());
     }
 
+    @Override
     public void prepareUnload() {
         // Execute onDisable() code before shutdown.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             for (Plugin plugin : PluginRepository.getInstance().getPlugins()) {
-                plugin.getPlugin().onDisable();
+                unloadPlugin(plugin);
             }
         }, "Shutdown"));
+    }
+
+    @Override
+    public void unloadPlugin(Plugin plugin) {
+        plugin.getPlugin().onDisable();
+        for (Class clazz : plugin.getClassMap()) {
+            loader.unloadClass(clazz.getName());
+        }
     }
 }

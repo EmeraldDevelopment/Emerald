@@ -55,7 +55,7 @@ public class EmeraldDataManager implements DataManager {
      */
     @Override
     public void createConfig(String configName) {
-        createFile(new File(configName + ".yml"));
+        createFile(new File(configName.toLowerCase() + ".yml"));
     }
 
     /**
@@ -88,7 +88,7 @@ public class EmeraldDataManager implements DataManager {
      */
     @Override
     public Map<String, Object> loadConfig(String configName) {
-        return loadFile(new File(configName + ".yml"));
+        return loadFile(new File(configName.toLowerCase() + ".yml"));
     }
 
     /**
@@ -121,7 +121,7 @@ public class EmeraldDataManager implements DataManager {
      */
     @Override
     public void saveConfig(String configName, LinkedHashMap<String, Object> data) {
-        DataUtil.dumpToFile(new File(configName + ".yml"), data);
+        DataUtil.dumpToFile(new File(configName.toLowerCase() + ".yml"), data);
     }
 
     // Creates a file

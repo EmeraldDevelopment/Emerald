@@ -52,7 +52,7 @@ public class PluginDataManager implements DataManager {
      */
     @Override
     public void createConfig(String configName) {
-        createFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"));
+        createFile(new File("plugins/" + plugin.getPluginName() + "/" + configName.toLowerCase() + ".yml"));
     }
 
     /**
@@ -85,7 +85,7 @@ public class PluginDataManager implements DataManager {
      */
     @Override
     public Map<String, Object> loadConfig(String configName) {
-        return loadFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"));
+        return loadFile(new File("plugins/" + plugin.getPluginName() + "/" + configName.toLowerCase() + ".yml"));
     }
 
     /**
@@ -116,7 +116,7 @@ public class PluginDataManager implements DataManager {
      */
     @Override
     public void saveConfig(String configName, LinkedHashMap<String, Object> data) {
-        DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"), data);
+        DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/" + configName.toLowerCase() + ".yml"), data);
     }
 
     // Creates a file
