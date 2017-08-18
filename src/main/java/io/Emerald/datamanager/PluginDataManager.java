@@ -46,6 +46,16 @@ public class PluginDataManager implements DataManager {
     }
 
     /**
+     * Creates a config file.
+     *
+     * @param configName The config file's name.
+     */
+    @Override
+    public void createConfig(String configName) {
+        createFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"));
+    }
+
+    /**
      * Creates or loads data from a file.
      *
      * @param user The user to get data for.
@@ -70,11 +80,12 @@ public class PluginDataManager implements DataManager {
     /**
      * Loads the config file.
      *
+     * @param configName The config file's name.
      * @return The config's data.
      */
     @Override
-    public Map<String, Object> loadConfig() {
-        return loadFile(new File("plugins/" + plugin.getPluginName() + "/config.yml"));
+    public Map<String, Object> loadConfig(String configName) {
+        return loadFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"));
     }
 
     /**
@@ -100,11 +111,12 @@ public class PluginDataManager implements DataManager {
     /**
      * Saves the config file.
      *
+     * @param configName The config file's name.
      * @param data The data to save.
      */
     @Override
-    public void saveConfig(LinkedHashMap<String, Object> data) {
-        DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/config.yml"), data);
+    public void saveConfig(String configName, LinkedHashMap<String, Object> data) {
+        DataUtil.dumpToFile(new File("plugins/" + plugin.getPluginName() + "/" + configName + ".yml"), data);
     }
 
     // Creates a file

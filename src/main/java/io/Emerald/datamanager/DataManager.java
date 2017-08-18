@@ -26,6 +26,13 @@ public interface DataManager {
     void createFile(IGuild guild);
 
     /**
+     * Creates a config file.
+     *
+     * @param configName The config file's name.
+     */
+    void createConfig(String configName);
+
+    /**
      * Creates or loads data from a file.
      *
      * @param user The user to get data for.
@@ -45,9 +52,10 @@ public interface DataManager {
     /**
      * Loads the config file.
      *
+     * @param configName The config file's name.
      * @return The config's data.
      */
-    Map<String, Object> loadConfig();
+    Map<String, Object> loadConfig(String configName);
 
     /**
      * Saves data to a file.
@@ -68,7 +76,8 @@ public interface DataManager {
     /**
      * Saves the config file.
      *
+     * @param configName The config file's name.
      * @param data The data to save.
      */
-    void saveConfig(LinkedHashMap<String, Object> data);
+    void saveConfig(String configName, LinkedHashMap<String, Object> data);
 }
