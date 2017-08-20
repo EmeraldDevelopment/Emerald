@@ -1,5 +1,6 @@
 package io.Emerald;
 
+import io.Emerald.commandmanager.EmeraldCommandRegistry;
 import io.Emerald.internal.plugin.EmeraldPluginLoader;
 import io.Emerald.internal.plugin.PluginLoader;
 import org.xeustechnologies.jcl.JarClassLoader;
@@ -37,6 +38,8 @@ public class Emerald {
         login(args[0]);
         // Create directories
         createDirectories();
+        // Register internal commands
+        EmeraldCommandRegistry.getRegistry();
         // Load plugins
         loadPlugins();
         // Prepares a thread for executing onDisable() for plugins later.

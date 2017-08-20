@@ -1,6 +1,7 @@
 package io.Emerald.internal.api;
 
 import io.Emerald.commandmanager.Command;
+import io.Emerald.commandmanager.PluginCommand;
 
 /**
  * Emerald's undefined command sender interface.
@@ -11,7 +12,7 @@ public interface CommandSender {
 
     boolean hasPermission(Command command);
 
-    boolean hasModifier(Command command, String modifier);
+    boolean hasModifier(PluginCommand command, String modifier);
 
     SenderType getSenderType();
 }

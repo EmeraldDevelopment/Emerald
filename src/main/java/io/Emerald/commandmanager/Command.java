@@ -1,67 +1,59 @@
 package io.Emerald.commandmanager;
 
-import io.Emerald.annotations.CommandMeta;
-import io.Emerald.exceptions.CommandMetaException;
 import io.Emerald.internal.api.ChannelType;
-import io.Emerald.internal.api.SenderType;
 import io.Emerald.internal.api.CommandSender;
+import io.Emerald.internal.api.SenderType;
 
-/**
- * Command object
- */
-public abstract class Command {
+public interface Command {
 
-    private String command;
-    private String usage;
-    private String description;
-    private boolean usePermissions;
-    private int minimumArgs;
-    private SenderType[] validSenders;
-    private ChannelType[] validChannels;
+    /**
+     * Get the label for this command.
+     *
+     * @return The command label.
+     */
+    String getCommand();
 
-    public Command() {
-        CommandMeta meta = getClass().getAnnotation(CommandMeta.class);
+    /**
+     * Gets the usage for this command.
+     *
+     * @return The command usage.
+     */
+    String getUsage();
 
-        if (meta == null) {
-            throw new CommandMetaException(getClass().getName() + " does not have a CommandMeta annotation!");
-        }
+    /**
+     * Gets the description for this command.
+     *
+     * @return The command description.
+     */
+    String getDescription();
 
-        command = meta.command();
-        usage = meta.usage();
-        description = meta.description();
-        usePermissions = meta.usePermissions();
-        minimumArgs = meta.minimumArgs();
-        validSenders = meta.validSenders();
-        validChannels = meta.validChannels();
-    }
+    /**
+     * Checks if this command requires permission checking.
+     *
+     * @return True if the command requires permissions.
+     */
+    boolean requiresPermissions();
 
-    public String getCommand() {
-        return command;
-    }
+    /**
+     * Gets the minimum number of arguments required for this command.
+     *
+     * @return The command's minimum argument count.
+     */
+    int getMinimumArgs();
 
-    public String getUsage() {
-        return usage;
-    }
+    /**
+     * Gets the valid sender types for this command.
+     *
+     * @return The command's valid sender types.
+     */
+    SenderType[] getValidSenders();
 
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean requiresPermissions() {
-        return usePermissions;
-    }
-
-    public int getMinimumArgs() {
-        return minimumArgs;
-    }
-
-    public SenderType[] getValidSenders() {
-        return validSenders;
-    }
-
-    public ChannelType[] getValidChannels() {
-        return validChannels;
-    }
+    /**
+     * Gets the valid channel types this command can be sent from.
+     *
+     * @return The command's valid channel types.
+     */
+    ChannelType[] getValidChannels();
 
     /**
      * Executes the given command.
@@ -69,5 +61,5 @@ public abstract class Command {
      * @param sender The command source.
      * @param args The arguments given.
      */
-    public abstract void execute(CommandSender sender, String[] args);
+    void execute(CommandSender sender, String[] args);
 }

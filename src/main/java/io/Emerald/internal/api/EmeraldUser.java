@@ -1,6 +1,7 @@
 package io.Emerald.internal.api;
 
 import io.Emerald.commandmanager.Command;
+import io.Emerald.commandmanager.PluginCommand;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.IShard;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
@@ -147,7 +148,7 @@ public class EmeraldUser implements User {
     }
 
     @Override // TODO
-    public boolean hasModifier(Command command, String modifier) {
+    public boolean hasModifier(PluginCommand command, String modifier) {
         return true;
     }
 

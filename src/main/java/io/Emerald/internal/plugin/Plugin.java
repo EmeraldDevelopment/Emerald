@@ -1,7 +1,7 @@
 package io.Emerald.internal.plugin;
 
-import io.Emerald.commandmanager.Command;
-import io.Emerald.commandmanager.CommandRegistry;
+import io.Emerald.commandmanager.PluginCommand;
+import io.Emerald.commandmanager.EmeraldCommandRegistry;
 
 import java.util.HashSet;
 import java.util.List;
@@ -64,14 +64,16 @@ public final class Plugin {
     }
 
     // List of all commands this plugin contains.
-    public List<Command> getCommands() {
-        return CommandRegistry.getRegistry().getRegisteredCommandsForPlugin(plugin);
+    public List<PluginCommand> getCommands() {
+        return EmeraldCommandRegistry.getRegistry().getRegisteredCommandsForPlugin(plugin);
     }
 
+    // Gets the classes associated with this plugin
     public HashSet<Class<?>> getClassMap() {
         return classMap;
     }
 
+    // Sets the classes associated with this plugin
     public void setClassMap(HashSet<Class<?>> classMap) {
         this.classMap = classMap;
     }

@@ -1,7 +1,7 @@
 package io.Emerald.internal.api;
 
 import io.Emerald.Emerald;
-import io.Emerald.commandmanager.Command;
+import io.Emerald.commandmanager.PluginCommand;
 
 /**
  * Emerald's console implementation.
@@ -29,12 +29,12 @@ public class EmeraldConsole implements ConsoleSender {
     }
 
     @Override
-    public boolean hasPermission(Command command) {
+    public boolean hasPermission(PluginCommand command) {
         return true;
     }
 
     @Override
-    public boolean hasModifier(Command command, String modifier) {
+    public boolean hasModifier(PluginCommand command, String modifier) {
         return true;
     }
 
