@@ -1,7 +1,6 @@
 package io.Emerald.internal.plugin;
 
 import io.Emerald.commandmanager.PluginCommand;
-import io.Emerald.commandmanager.EmeraldCommandRegistry;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,72 +8,68 @@ import java.util.List;
 /**
  * Class implementation of plugin object.
  */
-public final class Plugin {
+public interface Plugin {
 
-    private EmeraldPlugin plugin;
-    private String pluginName;
-    private String[] authors;
-    private String version;
-    private String permissionIdentifier;
-    private boolean requireDatabase;
-    private HashSet<Class<?>> classMap = new HashSet<>();
+    /**
+     * Gets the plugin's name.
+     *
+     * @return The plugin's name.
+     */
+    String getPluginName();
 
-    public Plugin(EmeraldPlugin plugin, String pluginName, String[] authors, String version, String permissionIdentifier, boolean requireDatabase) {
-        this.plugin = plugin;
-        this.pluginName = pluginName;
-        this.authors = authors;
-        this.version = version;
-        this.permissionIdentifier = permissionIdentifier;
-        this.requireDatabase = requireDatabase;
-    }
+    /**
+     * Gets the plugin's authors.
+     *
+     * @return the plugin's authors.
+     */
+    String[] getAuthors();
 
-    // Gets the EmeraldPlugin object for the plugin.
-    public EmeraldPlugin getPlugin() {
-        return plugin;
-    }
+    /**
+     * Gets the plugin's version.
+     *
+     * @return The plugin's version.
+     */
+    String getVersion();
 
-    // The name of the plugin.
-    public String getPluginName() {
-        return pluginName;
-    }
+    /**
+     * Gets the plugin's ID.
+     *
+     * @return The plugin's ID.
+     */
+    String getPluginID();
 
-    // The authors of the plugin.
-    public String[] getAuthors() {
-        return authors;
-    }
+    /**
+     * Gets this plugin's base permission identifier.
+     *
+     * @return The plugin's permission identifier.
+     */
+    String getPermissionIdentifier();
 
-    // The version of the plugin.
-    public String getVersion() {
-        return version;
-    }
+    /**
+     * Gets if the plugin requires a database.
+     *
+     * @return True if database is required.
+     */
+    boolean requireDatabase();
 
-    // The plugin's ID. (this should be handled automatically somehow)
-    public String getPluginID() {
-        return null;
-    }
+    /**
+     * Gets this plugin's command list.
+     *
+     * @return The plugin's command list.
+     */
+    List<PluginCommand> getCommands();
 
-    // The base level permission identifier this plugin will use. (ie. for the permission "test.hello.world" the identifier is "test")
-    public String getPermissionIdentifier() {
-        return permissionIdentifier;
-    }
+    /**
+     * Gets the classes associated with this plugin.
+     *
+     * @return The plugin's class map.
+     */
+    HashSet<Class<?>> getClassMap();
 
-    // Determines if this plugin requires a connected database to function.
-    public boolean requireDatabase() {
-        return requireDatabase;
-    }
-
-    // List of all commands this plugin contains.
-    public List<PluginCommand> getCommands() {
-        return EmeraldCommandRegistry.getRegistry().getRegisteredCommandsForPlugin(plugin);
-    }
-
-    // Gets the classes associated with this plugin
-    public HashSet<Class<?>> getClassMap() {
-        return classMap;
-    }
-
-    // Sets the classes associated with this plugin
-    public void setClassMap(HashSet<Class<?>> classMap) {
-        this.classMap = classMap;
-    }
+    /**
+     * Sets the classes associated with this plugin.
+     *
+     * @param classMap The classes to assign to this plugin.
+     */
+    void setClassMap(HashSet<Class<?>> classMap);
 }

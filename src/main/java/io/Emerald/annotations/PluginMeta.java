@@ -10,15 +10,15 @@ import java.lang.annotation.RetentionPolicy;
 public @interface PluginMeta {
 
     // The name of the plugin.
-    String pluginName() default "";
+    String pluginName();
     // The authors of the plugin.
     String[] authors() default "";
     // The version of the plugin.
     String version() default "";
     // The plugin's ID. (this should be handled automatically somehow)
-    String pluginID() default "";
+    String pluginID();
     // The base level permission identifier this plugin will use. (ie. for the permission "test.hello.world" the identifier is "test")
-    String permissionIdentifier() default "";
+    String permissionIdentifier();
     // Determines if this plugin requires a connected database to function.
     boolean requireDatabase() default false;
 }

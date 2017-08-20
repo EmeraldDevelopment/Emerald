@@ -92,7 +92,7 @@ public class EmeraldCommandRegistry implements CommandRegistry {
      * @return The command list for the requested plugin.
      */
     @SuppressWarnings("unchecked")
-    public List<PluginCommand> getRegisteredCommandsForPlugin(EmeraldPlugin plugin) {
+    public List<PluginCommand> getCommandsForPlugin(EmeraldPlugin plugin) {
         return getPluginCommands().stream().filter(command -> command.getPlugin().equals(plugin)).collect(Collectors.toList());
     }
 

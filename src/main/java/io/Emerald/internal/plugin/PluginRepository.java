@@ -10,7 +10,7 @@ import java.util.List;
 public class PluginRepository {
 
     private static PluginRepository instance;
-    private List<Plugin> plugins = new ArrayList<>();
+    private List<EmeraldPlugin> plugins = new ArrayList<>();
 
     /**
      * Creates an instance of the plugin repository.
@@ -31,7 +31,7 @@ public class PluginRepository {
      *
      * @param plugin The plugin(s) to register.
      */
-    public void registerPlugins(Plugin... plugin) {
+    public void registerPlugins(EmeraldPlugin... plugin) {
         plugins.addAll(Arrays.asList(plugin));
     }
 
@@ -40,7 +40,7 @@ public class PluginRepository {
      *
      * @return The plugin list for the repository.
      */
-    public List<Plugin> getPlugins() {
+    public List<EmeraldPlugin> getPlugins() {
         return plugins;
     }
 

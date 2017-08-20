@@ -1,21 +1,17 @@
 package io.Emerald.internal.plugin;
 
 import io.Emerald.Emerald;
-import io.Emerald.annotations.PluginMeta;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 public final class EmeraldPluginLoader implements PluginLoader {
-
+    // TODO : More improvements to come
     private static EmeraldPluginLoader instance;
     private JarClassLoader loader = Emerald.getClassLoader();
 
@@ -34,64 +30,62 @@ public final class EmeraldPluginLoader implements PluginLoader {
     }
 
     /**
-     * Loads a plugin from a given jar file.
+     * Loads a jar file as a plugin.
      *
-     * @param file The jar file to check.
-     * @throws IOException If the plugin doesn't have a plugin.yml
+     * @param file The jar file to load
+     *
+     * @throws IOException If the jar couldn't be loaded for some reason
+     *
+     * @return The finished plugin.
      */
     @Override @SuppressWarnings("unchecked")
-    public void loadPlugin(JarFile file) throws IOException {
+    public Plugin loadPlugin(JarFile file) throws IOException {
         InputStream stream = file.getInputStream(file.getEntry("plugin.yml"));
-        Enumeration<JarEntry> entries = file.entries();
         HashSet<Class<?>> classMap = new HashSet<>();
-        // Make sure the stream isn't null
+
         if (stream == null) {
-            Logger.getLogger("Test").warning("Couldn't find plugin.yml");
-            return;
+            System.out.println("Couldn't find plugin.yml");
+            return null;
         }
-        // Try to load the plugin.yml into the bot
+
         Map<String, String> pluginConfig = (Map<String, String>) new Yaml().load(stream);
-        // Return an error if the plugin config doesn't exist or doesn't contain a main key
+
         if (pluginConfig == null || !pluginConfig.containsKey("main")) {
-            System.out.println("plugin.yml does not exist or is corrupted.");
-            return;
+            System.out.println("plugin.yml does not exist or is improperly written.");
+            return null;
         }
-        // Get the value of the main key
+
         String mainClassURL = pluginConfig.get("main");
-        // If the main key doesn't exist throw an error
+
         if (mainClassURL == null) {
             System.out.println("Main class not provided.");
-            return;
+            return null;
         }
-        // Loop over jar entries
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
 
+        for (JarEntry entry : Collections.list(file.entries())) {
             if (entry.getName().endsWith(".class")) {
-                String name = entry.getName().replace("/", ".").replace(".class", "");
-
                 try {
-                    Class<?> loadedClass = Class.forName(name, true, loader);
+                    Class<?> loadedClass = Class.forName(entry.getName().replace("/", ".").replace(".class", ""), true, loader);
                     classMap.add(loadedClass);
                 } catch (ClassNotFoundException e) {
                     System.out.println("Failed to load class " + entry.getName() + " (Possibly corrupted?)");
                 }
             }
         }
-        // Resolve the main class from the URL
+
         Class<?> mainClass = null;
         for (Class<?> clazz : classMap) {
             if (clazz.getName().equals(mainClassURL)) {
                 mainClass = clazz;
             }
         }
-        // Check to make sure the main class isn't null
+
         if (mainClass == null) {
             System.out.println(mainClassURL + " does not point to a class.");
             stream.close();
-            return;
+            return null;
         }
-        // If the class doesn't extend EmeraldPlugin then unload it
+
         Class<? extends EmeraldPlugin> pluginClass;
         try {
             pluginClass = mainClass.asSubclass(EmeraldPlugin.class);
@@ -100,52 +94,36 @@ public final class EmeraldPluginLoader implements PluginLoader {
             for (Class<?> clazz : classMap) {
                 loader.unloadClass(clazz.getName());
             }
-            return;
+            return null;
         }
-        // Build the plugin and assign the class map to it.
-        Plugin plugin;
+
+        EmeraldPlugin plugin;
         try {
-            plugin = buildPlugin(pluginClass);
+            plugin = pluginClass.newInstance();
             plugin.setClassMap(classMap);
         } catch (IllegalAccessException | InstantiationException e) {
             System.out.println("Error occurred in plugin loading.");
-            return;
+            return null;
         }
 
-        plugin.getPlugin().onEnable();
+        plugin.onEnable();
         stream.close();
-    }
-
-    /**
-     * Partially builds the plugin without any commands or listeners.
-     *
-     * @param clazz The main plugin class (should extend EmeraldPlugin).
-     * @return The partially built plugin.
-     */
-    private Plugin buildPlugin(Class<? extends EmeraldPlugin> clazz) throws IllegalAccessException, InstantiationException {
-        EmeraldPlugin plugin = clazz.newInstance();
-        PluginMeta meta = clazz.getAnnotation(PluginMeta.class);
-        // If the @PluginMeta annotation doesn't exist fill in default info
-        if (meta == null) {
-            return new Plugin(plugin, "", new String[0], "", "", false);
-        }
-        // Fill in plugin data from the @PluginMeta annotation
-        return new Plugin(plugin, meta.pluginName(), meta.authors(), meta.version(), meta.permissionIdentifier(), meta.requireDatabase());
+        return plugin;
     }
 
     @Override
     public void prepareUnload() {
         // Execute onDisable() code before shutdown.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Plugin plugin : PluginRepository.getInstance().getPlugins()) {
+            for (EmeraldPlugin plugin : PluginRepository.getInstance().getPlugins()) {
                 unloadPlugin(plugin);
             }
         }, "Shutdown"));
     }
 
     @Override
-    public void unloadPlugin(Plugin plugin) {
-        plugin.getPlugin().onDisable();
+    public void unloadPlugin(EmeraldPlugin plugin) {
+        plugin.onDisable();
         for (Class clazz : plugin.getClassMap()) {
             loader.unloadClass(clazz.getName());
         }

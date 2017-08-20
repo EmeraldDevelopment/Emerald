@@ -16,8 +16,10 @@ public interface PluginLoader {
      * @throws IOException If the jar couldn't be loaded for some reason
      * @throws IllegalAccessException If part of the jar couldn't be properly loaded.
      * @throws InstantiationException If the jar's main class couldn't be instantiated.
+     *
+     * @return The finished plugin.
      */
-    void loadPlugin(JarFile file) throws IOException, IllegalAccessException, InstantiationException;
+    Plugin loadPlugin(JarFile file) throws IOException, IllegalAccessException, InstantiationException;
 
     /**
      * Prepares the application to unload plugins on shutdown.
@@ -29,5 +31,5 @@ public interface PluginLoader {
      *
      * @param plugin The plugin to unload.
      */
-    void unloadPlugin(Plugin plugin);
+    void unloadPlugin(EmeraldPlugin plugin);
 }
