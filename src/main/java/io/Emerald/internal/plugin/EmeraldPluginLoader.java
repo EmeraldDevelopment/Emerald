@@ -9,9 +9,10 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 public final class EmeraldPluginLoader implements PluginLoader {
-    // TODO : More improvements to come
+
     private static EmeraldPluginLoader instance;
     private JarClassLoader loader = Emerald.getClassLoader();
 
@@ -47,65 +48,54 @@ public final class EmeraldPluginLoader implements PluginLoader {
             System.out.println("Couldn't find plugin.yml");
             return null;
         }
-
+        // Try to load the plugin config
         Map<String, String> pluginConfig = (Map<String, String>) new Yaml().load(stream);
-
         if (pluginConfig == null || !pluginConfig.containsKey("main")) {
             System.out.println("plugin.yml does not exist or is improperly written.");
             return null;
         }
-
-        String mainClassURL = pluginConfig.get("main");
-
-        if (mainClassURL == null) {
+        // Get the main class name from the config
+        String mainClassName = pluginConfig.get("main");
+        if (mainClassName == null) {
             System.out.println("Main class not provided.");
             return null;
         }
-
+        // Load all classes in the jar.
         for (JarEntry entry : Collections.list(file.entries())) {
-            if (entry.getName().endsWith(".class")) {
-                try {
-                    Class<?> loadedClass = Class.forName(entry.getName().replace("/", ".").replace(".class", ""), true, loader);
-                    classMap.add(loadedClass);
-                } catch (ClassNotFoundException e) {
-                    System.out.println("Failed to load class " + entry.getName() + " (Possibly corrupted?)");
-                }
+            if (!entry.getName().endsWith(".class")) {
+                continue;
+            }
+            // Attempt to load the current entry as a class
+            try {
+                Class<?> loadedClass = Class.forName(entry.getName().replace("/", ".").replace(".class", ""), true, loader);
+                classMap.add(loadedClass);
+            } catch (ClassNotFoundException e) {
+                System.out.println("Failed to load class " + entry.getName() + " (Not Found)");
             }
         }
-
-        Class<?> mainClass = null;
-        for (Class<?> clazz : classMap) {
-            if (clazz.getName().equals(mainClassURL)) {
-                mainClass = clazz;
-            }
-        }
-
-        if (mainClass == null) {
-            System.out.println(mainClassURL + " does not point to a class.");
+        // Attempt to find the main class using the provided class name
+        List<Class<?>> main = classMap.stream().filter(clazz -> clazz.getName().equals(mainClassName)).collect(Collectors.toList());
+        if (main.isEmpty()) {
+            System.out.println(mainClassName + " does not point to a class.");
             stream.close();
             return null;
         }
-
+        // Attempt to build the plugin
         Class<? extends EmeraldPlugin> pluginClass;
+        EmeraldPlugin plugin;
         try {
-            pluginClass = mainClass.asSubclass(EmeraldPlugin.class);
-        } catch (ClassCastException e) {
-            System.out.println(file.getName() + " is not a valid plugin and cannot be loaded! Contact the developers for help.");
+            pluginClass = main.get(0).asSubclass(EmeraldPlugin.class);
+            plugin = pluginClass.newInstance();
+            plugin.setClassMap(classMap);
+        } catch (ClassCastException | IllegalAccessException | InstantiationException e) {
+            System.out.println(file.getName() + " cannot be loaded! (Plugin either isn't valid or corrupted; contact the developers for help.)");
+            // Unload the class map
             for (Class<?> clazz : classMap) {
                 loader.unloadClass(clazz.getName());
             }
             return null;
         }
-
-        EmeraldPlugin plugin;
-        try {
-            plugin = pluginClass.newInstance();
-            plugin.setClassMap(classMap);
-        } catch (IllegalAccessException | InstantiationException e) {
-            System.out.println("Error occurred in plugin loading.");
-            return null;
-        }
-
+        // Run the plugin's onEnable
         plugin.onEnable();
         stream.close();
         return plugin;
@@ -121,9 +111,16 @@ public final class EmeraldPluginLoader implements PluginLoader {
         }, "Shutdown"));
     }
 
+    /**
+     * Unloads a specific plugin.
+     *
+     * @param plugin The plugin to unload.
+     */
     @Override
     public void unloadPlugin(EmeraldPlugin plugin) {
+        // Run plugin onDisable
         plugin.onDisable();
+        // Unload the class map
         for (Class clazz : plugin.getClassMap()) {
             loader.unloadClass(clazz.getName());
         }

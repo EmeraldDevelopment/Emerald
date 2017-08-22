@@ -8,6 +8,8 @@ import io.Emerald.commandmanager.PluginCommand;
  */
 public interface CommandSender {
 
+    String getName();
+
     void sendMessage(String message);
 
     boolean hasPermission(Command command);

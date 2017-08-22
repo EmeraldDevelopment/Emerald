@@ -1,6 +1,7 @@
 package io.Emerald.internal.api;
 
 import io.Emerald.Emerald;
+import io.Emerald.commandmanager.Command;
 import io.Emerald.commandmanager.PluginCommand;
 
 /**
@@ -14,7 +15,6 @@ public class EmeraldConsole implements ConsoleSender {
         if (console == null) {
             console = new EmeraldConsole();
         }
-
         return console;
     }
 
@@ -29,7 +29,7 @@ public class EmeraldConsole implements ConsoleSender {
     }
 
     @Override
-    public boolean hasPermission(PluginCommand command) {
+    public boolean hasPermission(Command command) {
         return true;
     }
 

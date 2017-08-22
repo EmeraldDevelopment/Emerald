@@ -6,6 +6,7 @@ import io.Emerald.internal.api.ChannelType;
 import io.Emerald.internal.api.CommandSender;
 import io.Emerald.internal.api.SenderType;
 import io.Emerald.internal.plugin.EmeraldPlugin;
+import sx.blah.discord.handle.obj.IMessage;
 
 /**
  * Plugin command object
@@ -60,7 +61,7 @@ public abstract class PluginCommand implements Command {
     }
 
     @Override
-    public abstract void execute(CommandSender sender, String[] args);
+    public abstract void execute(CommandSender sender, IMessage message, String[] args);
 
     public EmeraldPlugin getPlugin() {
         return plugin;

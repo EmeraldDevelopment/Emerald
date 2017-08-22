@@ -23,12 +23,11 @@ import java.util.jar.JarFile;
  */
 public class Emerald {
 
-    private static File plugins = new File("plugins/");
-    private static File users = new File("users/");
-    private static File guilds = new File("guilds/");
+    private static File plugins = new File("plugins/"), users = new File("users/"), guilds = new File("guilds/");
     private static JarClassLoader classLoader = new JarClassLoader();
     private static PluginLoader loader = EmeraldPluginLoader.getInstance();
     private static IDiscordClient client;
+    private static long startupTime;
 
     // Emerald Initialization
     public static void main(String[] args) {
@@ -44,6 +43,8 @@ public class Emerald {
         loadPlugins();
         // Prepares a thread for executing onDisable() for plugins later.
         loader.prepareUnload();
+        // Set the current startup time
+        startupTime = System.currentTimeMillis();
     }
 
     // Create directories for users and guilds
@@ -113,5 +114,14 @@ public class Emerald {
      */
     public static IDiscordClient getClient() {
         return client;
+    }
+
+    /**
+     * Gets the startup time for Emerald.
+     *
+     * @return The current startup time.
+     */
+    public static long getStartupTime() {
+        return startupTime;
     }
 }

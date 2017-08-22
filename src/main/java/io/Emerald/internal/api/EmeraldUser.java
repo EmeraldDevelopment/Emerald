@@ -141,13 +141,13 @@ public class EmeraldUser implements User {
     public void sendMessage(String message) {
         getOrCreatePMChannel().sendMessage(message);
     }
-    // TODO Implement permission checking
+    // TODO: Implement permission checking
     @Override
     public boolean hasPermission(Command command) {
         return true;
     }
 
-    @Override // TODO
+    @Override // TODO: Implement modifier checking
     public boolean hasModifier(PluginCommand command, String modifier) {
         return true;
     }

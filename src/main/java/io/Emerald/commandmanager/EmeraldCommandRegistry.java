@@ -3,14 +3,17 @@ package io.Emerald.commandmanager;
 import io.Emerald.Emerald;
 import io.Emerald.commandmanager.internalcommands.HelpCommand;
 import io.Emerald.commandmanager.internalcommands.StatsCommand;
+import io.Emerald.events.CommandExecutionEvent;
 import io.Emerald.internal.api.ChannelType;
 import io.Emerald.internal.api.CommandSender;
 import io.Emerald.internal.api.EmeraldUser;
 import io.Emerald.internal.plugin.EmeraldPlugin;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 
+import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +33,6 @@ public class EmeraldCommandRegistry implements CommandRegistry {
      * @return The command registry instance.
      */
     public static EmeraldCommandRegistry getRegistry() {
-
         if (registry == null) {
             registry = new EmeraldCommandRegistry();
             Emerald.getClient().getDispatcher().registerListener(registry);
@@ -81,6 +83,13 @@ public class EmeraldCommandRegistry implements CommandRegistry {
             if (command instanceof PluginCommand) {
                 pluginCommands.add((PluginCommand) command);
             }
+        }
+        try {
+            EventQueue.invokeAndWait(() -> {
+
+            });
+        } catch (InterruptedException | InvocationTargetException e) {
+            e.printStackTrace();
         }
         return pluginCommands;
     }
@@ -142,7 +151,7 @@ public class EmeraldCommandRegistry implements CommandRegistry {
             return;
         }
         // Process the command
-        processCommand(new EmeraldUser(event.getAuthor()), event.getChannel(), commandData);
+        processCommand(new EmeraldUser(event.getAuthor()), event.getMessage(), commandData);
     }
 
     // Processes a command without a channel
@@ -150,8 +159,7 @@ public class EmeraldCommandRegistry implements CommandRegistry {
         processCommand(sender, null, commandData);
     }
 
-    // Processes the command TODO: Clean this up a bit later
-    private void processCommand(CommandSender sender, IChannel channel, String[] commandData) {
+    private void processCommand(CommandSender sender, IMessage message, String[] commandData) {
         // Ignore the event if client isn't ready or logged in
         if (!Emerald.getClient().isReady() || !Emerald.getClient().isLoggedIn()) {
             return;
@@ -159,7 +167,6 @@ public class EmeraldCommandRegistry implements CommandRegistry {
 
         String commandName = commandData[0].replaceFirst("!", "");
         String[] args = commandData.length > 1 ? Arrays.copyOfRange(commandData, 1, commandData.length) : new String[0];
-
         for (Command command : getCommands()) {
             // Skip the current command if it doesn't match the sent command
             if (!command.getCommand().equalsIgnoreCase(commandName)) {
@@ -181,12 +188,13 @@ public class EmeraldCommandRegistry implements CommandRegistry {
                 return;
             }
 
-            if (channel != null && !Arrays.asList(command.getValidChannels()).contains(ChannelType.getChannelType(channel))) {
+            if (message != null && !Arrays.asList(command.getValidChannels()).contains(ChannelType.getChannelType(message.getChannel()))) {
                 return;
             }
 
             // Execute the command
-            command.execute(sender, args);
+            Emerald.getClient().getDispatcher().dispatch(new CommandExecutionEvent(sender, command));
+            command.execute(sender, message, args);
             break;
         }
     }

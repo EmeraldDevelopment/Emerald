@@ -3,6 +3,7 @@ package io.Emerald.commandmanager;
 import io.Emerald.internal.api.ChannelType;
 import io.Emerald.internal.api.CommandSender;
 import io.Emerald.internal.api.SenderType;
+import sx.blah.discord.handle.obj.IMessage;
 
 public interface Command {
 
@@ -61,5 +62,5 @@ public interface Command {
      * @param sender The command source.
      * @param args The arguments given.
      */
-    void execute(CommandSender sender, String[] args);
+    void execute(CommandSender sender, IMessage message, String[] args);
 }

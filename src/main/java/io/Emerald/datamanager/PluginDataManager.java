@@ -22,7 +22,7 @@ public class PluginDataManager implements DataManager {
      * @param plugin The implementing plugin.
      */
     public PluginDataManager(EmeraldPlugin plugin) {
-        this.plugin = plugin.getPlugin();
+        this.plugin = plugin;
     }
 
     /**
